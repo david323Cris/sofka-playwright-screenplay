@@ -8,11 +8,13 @@ module.exports = {
       'frontend/features/**/*.feature'
     ],
     format: [
-      'progress', // Muestra el progreso en la terminal (puntitos verdes)
-      'html:reports/cucumber-report.html' // Genera un reporte HTML nativo en la carpeta reports
+      'progress',
+      'html:reports/cucumber-report.html',
+      'allure-cucumberjs/reporter' // <-- El integrador de Allure
     ],
     formatOptions: {
-      snippetInterface: 'async-await'
+      snippetInterface: 'async-await',
+      resultsDir: 'allure-results' // <-- Donde Allure guardará los datos crudos
     }
   }
 };
