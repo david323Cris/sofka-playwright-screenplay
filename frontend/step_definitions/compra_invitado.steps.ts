@@ -1,8 +1,7 @@
 import { Given, When, Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
 import { page } from './setup'; // Importamos la página compartida
 import { AgregarAlCarrito, VisualizarCarrito, CompletarCheckoutInvitado } from '../src/tasks/index';
-import { CheckoutPage } from '../src/ui/CheckoutPage';
+import { ValidarMensajeExito } from '../src/questions/ValidarMensajeExito';
 
 Given('que el usuario navega a la tienda de OpenCart', async () => {
     await page.goto('http://opencart.abstracta.us/');
@@ -22,7 +21,6 @@ When('completa el formulario de checkout como invitado', async () => {
 });
 
 Then('debería ver el mensaje de confirmación {string}', async (mensajeEsperado: string) => {
-    // Validación nativa de Playwright (Web-First Assertions)
-    const locatorMensaje = page.locator(CheckoutPage.mensajeExito);
-    await expect(locatorMensaje).toContainText(mensajeEsperado);
+    // Le pasamos la página y el texto que viene del Gherkin
+    await ValidarMensajeExito.queContenga(page, mensajeEsperado);
 });
