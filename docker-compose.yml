@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  sofka-tests:
+    build: .
+    image: sofka-qa-framework
+    container_name: pruebas_automatizadas_sofka
+    ipc: host # <-- ESTA ES LA MAGIA PARA PLAYWRIGHT EN DOCKER
+    environment:
+      - CI=true 
+    volumes:
+      - ./reports:/app/reports
+      - ./allure-results:/app/allure-results
+      - ./allure-results-api:/app/allure-results-api

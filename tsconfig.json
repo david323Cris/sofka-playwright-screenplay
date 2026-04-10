@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "CommonJS",
-    "moduleResolution": "node10",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -12,7 +12,8 @@
     "paths": {
       "@/*": ["frontend/src/*"]
     },
-    "ignoreDeprecations": "5.0"
+    "ignoreDeprecations": "5.0",
+    "types": ["node"] 
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules"]

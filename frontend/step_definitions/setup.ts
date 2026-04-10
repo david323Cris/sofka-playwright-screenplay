@@ -1,17 +1,21 @@
 import { Before, After, BeforeAll, AfterAll, AfterStep, setDefaultTimeout, Status } from '@cucumber/cucumber';
 import { chromium, Browser, BrowserContext, Page } from '@playwright/test';
 
-// Tiempo de espera por defecto (30 segundos)
-setDefaultTimeout(30 * 1000);
+// Aumentamos a 60 segundos para darle respiro a Docker
+setDefaultTimeout(60 * 1000);
 
 let browser: Browser;
 let context: BrowserContext;
 let page: Page;
 
 BeforeAll(async () => {
+    // Si existe la variable CI (estamos en Docker), headless será true. 
+    // Si estás en tu máquina local, será false y verás el navegador.
+    const isCI = process.env.CI === 'true';
+
     browser = await chromium.launch({ 
-        headless: false, 
-        slowMo: 500
+        headless: isCI, 
+        slowMo: isCI ? 0 : 500 // Sin pausas en Docker para que vuele
     });
 });
 
