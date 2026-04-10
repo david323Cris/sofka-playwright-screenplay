@@ -1,29 +1,40 @@
-import { BeforeAll, AfterAll, setDefaultTimeout } from '@cucumber/cucumber';
-import { engage, Cast } from '@serenity-js/core';
-import { BrowseTheWebWithPlaywright } from '@serenity-js/playwright';
-import { Browser, chromium } from 'playwright';
+import { Before, After, BeforeAll, AfterAll, setDefaultTimeout } from '@cucumber/cucumber';
+import { chromium, Browser, BrowserContext, Page } from '@playwright/test';
 
-// Timeout general para los pasos de Cucumber
-setDefaultTimeout(60000);
+// Tiempo de espera por defecto para Cucumber (30 segundos)
+setDefaultTimeout(30 * 1000);
 
 let browser: Browser;
+let context: BrowserContext;
+let page: Page;
 
-// Usamos BeforeAll para levantar el navegador una sola vez y hacer las pruebas más rápidas
+// Se ejecuta una sola vez al inicio de todas las pruebas
 BeforeAll(async () => {
-    // Levantamos el navegador Chromium
-    browser = await chromium.launch({ headless: false }); // Ponlo en 'true' para Docker
-
-    // "engage" prepara el escenario y "Cast" define qué pueden hacer los actores
-    engage(
-        Cast.where(actor => 
-            actor.whoCan(BrowseTheWebWithPlaywright.using(browser))
-        )
-    );
+    browser = await chromium.launch({ 
+        headless: false, // Cambia a true si no quieres ver el navegador
+        slowMo: 500      // Pausa de 500ms entre acciones para que alcances a ver qué hace
+    });
 });
 
-// Cerramos el navegador al terminar todas las pruebas
+// Se ejecuta antes de cada Escenario
+Before(async () => {
+    context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+        ignoreHTTPSErrors: true
+    });
+    page = await context.newPage();
+});
+
+// Se ejecuta después de cada Escenario
+After(async () => {
+    await page.close();
+    await context.close();
+});
+
+// Se ejecuta al final de todo
 AfterAll(async () => {
-    if (browser) {
-        await browser.close();
-    }
+    await browser.close();
 });
+
+// Exportamos la instancia de 'page' para que los Steps la importen
+export { page };
